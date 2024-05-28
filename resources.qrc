@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/calc_diversity" >
+        <file>icon.png</file>
+    </qresource>
+</RCC>
