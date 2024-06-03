@@ -24,6 +24,7 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
+from qgis.core import QgsMapLayerProxyModel, QgsFieldProxyModel
 
 # Initialize Qt resources from file resources.py
 from .resources import *
@@ -188,6 +189,16 @@ class CalcDiversity:
         if self.first_start == True:
             self.first_start = False
             self.dlg = CalcDiversityDialog()
+
+            self.dlg.mcbPoly.setFilters(QgsMapLayerProxyModel.PolygonLayer)
+            self.dlg.mcbPoint.setFilters(QgsMapLayerProxyModel.PointLayer)
+            #self.dlg.mcbPoint.setFilters(QgsMapLayerProxyModel.LineLayer)
+
+            self.dlg.fcbCategory.setFilters(QgsFieldProxyModel.String)
+            self.dlg.fcbSpecies.setFilters(QgsFieldProxyModel.String)  
+
+            self.dlg.fcbCategory.setLayer(self.dlg.mcbPoly.currentLayer())
+            self.dlg.fcbSpecies.setLayer(self.dlg.mcbPoint.currentLayer())
 
         # show the dialog
         self.dlg.show()
