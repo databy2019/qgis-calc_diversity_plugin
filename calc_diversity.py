@@ -24,12 +24,13 @@
 from qgis.PyQt.QtCore import QSettings, QTranslator, QCoreApplication
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction
-from qgis.core import QgsMapLayerProxyModel, QgsFieldProxyModel
+from qgis.core import QgsMapLayerProxyModel, QgsFieldProxyModel, QgsMessageLog, Qgis
 
 # Initialize Qt resources from file resources.py
 from .resources import *
 # Import the code for the dialog
 from .calc_diversity_dialog import CalcDiversityDialog
+from .diversity_function import dc_summarizePoly
 import os.path
 
 
@@ -206,6 +207,16 @@ class CalcDiversity:
         result = self.dlg.exec_()
         # See if OK was pressed
         if result:
-            # Do something useful here - delete the line containing pass and
-            # substitute with your code.
-            pass
+            # Get required input parameters from dialog
+            lyrPoly = self.dlg.mcbPoly.currentLayer()
+            lyrPoint = self.dlg.mcbPoint.currentLayer()
+
+            fldCategory = self.dlg.fcbCategory.currentField()
+            fldSpecies = self.dlg.fcbSpecies.currentField()
+
+            for poly in lyrPoly.getFeatures():
+                sCategory = poly.attribute(fldCategory)
+                QgsMessageLog.logMessage("Category : {}".format(sCategory), "Claculator Diversity", level = Qgis.Info)
+                dct_summary = dc_summarizePoly(poly, lyrPoint, fldSpecies)
+
+                QgsMessageLog.logMessage("Summary : {}".format(dct_summary), "Claculator Diversity", level = Qgis.Info)
